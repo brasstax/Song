@@ -104,13 +104,15 @@ class Twitter(object):
         twitter_database_host: str,
         twitter_database_username: str,
         twitter_database_password: str,
-        twitter_usernames: str
+        twitter_usernames: str,
+        twitter_base_url: str = "fxtwitter.com",
     ):
         self.bot = bot
         self.channel_id = int(discord_channel_id)
         self.twitter_connection = f"user={twitter_database_username} password={twitter_database_password} dbname={twitter_database_db} host={twitter_database_host}"
         self.twitter_usernames = twitter_usernames
         self.client = None
+        self.twitter_base_url = twitter_base_url
 
     async def follow(self):
         if not self.bot.is_following:
@@ -124,7 +126,7 @@ class Twitter(object):
                     for tweet in tweets:
                         sid = tweet["tweet_id"]
                         logging.info(f"@{username}: {sid}")
-                        url = f"https://fxtwitter.com/{username}/status/{sid}"
+                        url = f"https://{self.twitter_base_url}/{username}/status/{sid}"
                         logging.info(url)
                         if not await self.client.check_muted_user(username):
                             await channel.send(url)

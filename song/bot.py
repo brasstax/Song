@@ -49,6 +49,10 @@ SNSCRAPE_DATABASE_PASSWORD = os.environ.get("SNSCRAPE_DATABASE_PASSWORD", None)
 if not SNSCRAPE_DATABASE_PASSWORD:
     sys.exit("SNSCRAPE_DATABASE_PASSWORD environment variable not set.")
 
+TWITTER_BASE_URL = os.environ.get("TWITTER_BASE_URL", None)
+if TWITTER_BASE_URL == "":
+    TWITTER_BASE_URL = None
+
 bot = commands.Bot(
     command_prefix=commands.when_mentioned_or(COMMAND_PREFIX),
     description="She sees all and she'll snipe you with a bow.",
@@ -76,6 +80,7 @@ async def on_ready():
         twitter_database_host=SNSCRAPE_DATABASE_HOST,
         twitter_database_username=SNSCRAPE_DATABASE_USERNAME,
         twitter_database_password=SNSCRAPE_DATABASE_PASSWORD,
+        twitter_base_url=TWITTER_BASE_URL,
     )
     await bot.twitter.follow()
 

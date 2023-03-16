@@ -17,6 +17,9 @@ services:
       DISCORD_TOKEN:
       DISCORD_NEWS_CHANNEL_ID:
       DISCORD_COMMAND_PREFIX: ","
+      # Can replace the TWITTER_BASE_URL with a different twitter base, such as
+      # fxtwitter.com or vxtwitter.com
+      TWITTER_BASE_URL: "twitter.com"
     depends_on:
       - scraper
       - postgres
