@@ -21,8 +21,8 @@ services:
       # fxtwitter.com or vxtwitter.com
       TWITTER_BASE_URL: "twitter.com"
     depends_on:
-      - scraper
-      - postgres
+      scraper:
+        condition: service_healthy
 
   scraper:
     image: catfacts/twitter-scraper
@@ -30,9 +30,10 @@ services:
       context: ./scraper
     environment: *common-variables
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     healthcheck:
-      test: CMD /home/song/healthcheck.sh
+      test: ["CMD", "/home/song/healthcheck.sh"]
       interval: 10s
       retries: 5
       start_period: 20s
@@ -41,11 +42,18 @@ services:
   postgres:
     image: postgres:14-alpine
     restart: always
+    user: postgres
     environment:
+      PGUSER: postgres
       POSTGRES_PASSWORD: sample_password
     hostname: postgres
     volumes:
       - pgdata:/var/lib/postgresql/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   pgdata:
