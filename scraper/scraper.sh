@@ -23,6 +23,8 @@ psql "user=$SNSCRAPE_DATABASE_USERNAME password=$SNSCRAPE_DATABASE_PASSWORD host
 psql "user=$SNSCRAPE_DATABASE_USERNAME password=$SNSCRAPE_DATABASE_PASSWORD host=$SNSCRAPE_DATABASE_HOST dbname=$SNSCRAPE_DATABASE_DB" -c "CREATE TABLE IF NOT EXISTS settings(id SERIAL PRIMARY KEY, name TEXT, value TEXT)" > /dev/null
 IFS=',' read -ra USERS <<< $SNSCRAPE_TWITTER_USERS
 echo "Now scraping. Press Ctrl-C to exit."
+trap "exit" SIGTERM
+trap "exit" SIGINT
 while true; do
   for user in "${USERS[@]}"; do
     echo "Scraping $user"
