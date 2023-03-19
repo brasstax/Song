@@ -31,6 +31,12 @@ services:
     environment: *common-variables
     depends_on:
       - postgres
+    healthcheck:
+      test: CMD /home/song/healthcheck.sh
+      interval: 10s
+      retries: 5
+      start_period: 20s
+      timeout: 20s
 
   postgres:
     image: postgres:14-alpine
