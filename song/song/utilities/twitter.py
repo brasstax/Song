@@ -18,7 +18,7 @@ class TwitterDatabase:
     
     async def get_unread_tweets(self, username: str) -> List[Dict[str, str]]:
         cmd: str = """
-        SELECT status_id, date from tweets
+        SELECT status_id, date, reply_id, reply_user from tweets
         WHERE silva_read is false
         AND username = %s
         ORDER BY date ASC;
@@ -30,10 +30,14 @@ class TwitterDatabase:
                 async for row in cur:
                     tweet_date = row["date"]
                     tweet_id = row["status_id"]
+                    reply_id = row["reply_id"]
+                    reply_user = row["reply_user"]
                     tweets.append(
                         {
                             "tweet_date": tweet_date,
-                            "tweet_id": tweet_id
+                            "tweet_id": tweet_id,
+                            "reply_id": reply_id,
+                            "reply_user": reply_user,
                         }
                     )
         return tweets
@@ -128,8 +132,14 @@ class Twitter(object):
                         logging.info(f"@{username}: {sid}")
                         url = f"https://{self.twitter_base_url}/{username}/status/{sid}"
                         logging.info(url)
+                        if tweet["reply_id"]:
+                            reply_url=f"https://{self.twitter_base_url}/{tweet['reply_user']}/status/{tweet['reply_id']}"
+                            logging.info(f"reply_url: {reply_url}")
+                            msg = f"[{tweet['reply_user']} tweeted]({reply_url}), and [{username} replied!]({url})"
+                        else:
+                            msg = f"[{username} tweeted!]({url})"
                         if not await self.client.check_muted_user(username):
-                            await channel.send(url)
+                            await channel.send(msg)
                         else:
                             logging.info(f"Ignoring {username}")
                         await self.client.mark_tweet_read(username, sid)
