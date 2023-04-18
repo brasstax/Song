@@ -1,31 +1,31 @@
 version: "3.9"
 
 x-common-variables: &common-variables
-  SNSCRAPE_TWITTER_USERS: granblue_en,granbluefantasy
-  SNSCRAPE_DATABASE_DB: twitter
+  SNSCRAPE_TWITTER_USERS: granblue_en,granbluefantasy #comma-separated usernames for Twitter users you want tweets for
+  SNSCRAPE_DATABASE_DB: twitter # You can leave this alone
   SNSCRAPE_DATABASE_HOST: postgres
   SNSCRAPE_DATABASE_USERNAME: postgres
-  SNSCRAPE_DATABASE_PASSWORD: sample_password
+  SNSCRAPE_DATABASE_PASSWORD: sample_password # Should match POSTGRES_PASSWORD below
 
 services:
   discord-bot:
     image: catfacts/song
+    restart: always
     build:
       context: ./song
     environment:
       <<: *common-variables
-      DISCORD_TOKEN:
-      DISCORD_NEWS_CHANNEL_ID:
-      DISCORD_COMMAND_PREFIX: ","
-      # Can replace the TWITTER_BASE_URL with a different twitter base, such as
-      # fxtwitter.com or vxtwitter.com
-      TWITTER_BASE_URL: "twitter.com"
+      DISCORD_TOKEN: # Put in your bot's token here, ie "EXAMPLE.TOKEN"
+      DISCORD_NEWS_CHANNEL_ID: # Put in the numerical ID for your channel you want the bot to post on (Right-click a channel and click on "copy ID".
+      DISCORD_COMMAND_PREFIX: "," # Or put in another command prefix if you'd like; this doesn't actually see any use.
+      TWITTER_BASE_URL: "twitter.com" # You can swap this out with another twitter-parsing service, such as fxtwitter.com or vxtwitter.com
     depends_on:
       scraper:
         condition: service_healthy
 
   scraper:
     image: catfacts/twitter-scraper
+    restart: always
     build:
       context: ./scraper
     environment: *common-variables
@@ -44,9 +44,9 @@ services:
     restart: always
     user: postgres
     environment:
-      PGUSER: postgres
-      POSTGRES_PASSWORD: sample_password
-    hostname: postgres
+      PGUSER: postgres # Shoud match SNSCRAPE_DATABASE_USERNAME above
+      POSTGRES_PASSWORD: sample_password # should match SNSCRAPE_POSTGRES_PASSWORD above
+    hostname: postgres # Should match SNSCRAPE_DATABASE_HOST above
     volumes:
       - pgdata:/var/lib/postgresql/pgdata
     healthcheck:
