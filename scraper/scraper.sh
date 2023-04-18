@@ -35,9 +35,11 @@ while true; do
       username=$(echo $tweet | zq -f zson 'yield user.username' -)
       status_id=$(echo $tweet | zq -f zson 'yield id' -)
       reply_id=$(echo $tweet | zq -f zson 'yield inReplyToTweetId' -)
+      [[ $reply_id == 'null' ]] && reply_id=0
       reply_user=$(echo $tweet | zq -f zson 'yield inReplyToUser.username' -)
+      [[ $reply_user == 'error("missing")' ]] && reply_user=''
       date=$(echo $tweet | zq -f zson 'yield date' -)
-      psql "user=$SNSCRAPE_DATABASE_USERNAME password=$SNSCRAPE_DATABASE_PASSWORD host=$SNSCRAPE_DATABASE_HOST dbname=$SNSCRAPE_DATABASE_DB" -c "INSERT INTO tweets(username, status_id, date, reply_id, reply_user, silva_read) VALUES ('$username', $status_id, '$date', '$reply_id', '$reply_user', false) ON CONFLICT (username, status_id) DO NOTHING" > /dev/null
+      psql "user=$SNSCRAPE_DATABASE_USERNAME password=$SNSCRAPE_DATABASE_PASSWORD host=$SNSCRAPE_DATABASE_HOST dbname=$SNSCRAPE_DATABASE_DB" -c "INSERT INTO tweets(username, status_id, date, reply_id, reply_user, silva_read) VALUES ('$username', $status_id, '$date', NULLIF('$reply_id', '0')::bigint, NULLIF('$reply_user', ''), false) ON CONFLICT (username, status_id) DO NOTHING" > /dev/null
     done
   done
   sleep 2
