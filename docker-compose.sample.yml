@@ -21,13 +21,14 @@ services:
       DISCORD_COMMAND_PREFIX: "," # Or put in another command prefix if you'd like; this doesn't actually see any use.
       TWITTER_BASE_URL: "twitter.com" # You can swap this out with another twitter-parsing service, such as fxtwitter.com or vxtwitter.com
     depends_on:
-      nitter-scraper:
+      nitter-rss-feed:
         condition: service_healthy
 
 
-  nitter-scraper:
+  nitter-rss-feed:
+    image: catfacts/nitter-rss-feed
     build:
-      context: ./nitter-scraper
+      context: ./nitter-rss-feed
     restart: always
     environment: *common-variables
     depends_on:
