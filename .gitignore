@@ -120,3 +120,9 @@ song/secrets/
 
 # docker-compose.yml
 docker-compose.yml
+
+# nitter configuration file
+nitter/nitter.conf
+
+nitter-scraper/.bash_history
+nitter-scraper/.python_history
