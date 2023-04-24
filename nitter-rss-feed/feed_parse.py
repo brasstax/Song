@@ -4,8 +4,10 @@ import signal
 import sys
 import asyncio
 import logging
+from datetime import datetime, timezone
 import feedparser
 from psycopg_pool import AsyncConnectionPool
+import psycopg.errors
 
 logging.basicConfig(level=logging.INFO)
 
@@ -50,6 +52,7 @@ async def amain():
   VALUES (%s, %s, %s, false)
   ON CONFLICT (username, status_id) DO NOTHING
   """
+  logging.info(f"Now setting up feeds for {TO_FOLLOW}.")
   for username in TO_FOLLOW.split(","):
     feed = feedparser.parse(f"http://{NITTER_ADDRESS}/{username}/with_replies/rss")
     async with conn.connection() as db:
@@ -57,6 +60,9 @@ async def amain():
         logging.debug(entry)
         tweet_id = int(entry.id.split("/")[-1].split("#")[0])
         published = entry["published"]
+        if published == "Mon, 00  0001 00:00:00 GMT":
+            # Tweet's valid but is likely NSFW, so an invalid timestamp gets returned by rss. Replace it with "now".
+            published = datetime.now(tz=timezone.utc)
         async with db.cursor() as cur:
             logging.info(f"Parse {username} for ID {tweet_id} published {published}, titled {entry['title']}")
             await cur.execute(cmd, (username, tweet_id, published,), prepare=True)
