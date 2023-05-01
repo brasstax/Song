@@ -30,7 +30,7 @@ trap "exit" SIGINT
 while true; do
   for user in "${USERS[@]}"; do
     echo "Scraping $user"
-    IFS=' ' mapfile -t tweets < <(snscrape -n 10 --retry 3 --jsonl twitter-search "from:$user include:nativeretweets")
+    IFS=' ' mapfile -t tweets < <(snscrape -n 10 --retry 3 --jsonl twitter-profile $user)
     for tweet in "${tweets[@]}"; do
       username=$(echo $tweet | zq -f zson 'yield user.username' - | sed s/\"//g)
       status_id=$(echo $tweet | zq -f zson 'yield id' -)
