@@ -62,6 +62,8 @@ async def amain():
         published = entry["published"]
         if published == "Mon, 00  0001 00:00:00 GMT":
             # Tweet's valid but is likely NSFW, so an invalid timestamp gets returned by rss. Replace it with "now".
+            # TODO: change the logic of this thing so that it's not always now, or check the database first to see
+            # when we first published it.
             published = datetime.now(tz=timezone.utc)
         async with db.cursor() as cur:
             logging.info(f"Parse {username} for ID {tweet_id} published {published}, titled {entry['title']}")
