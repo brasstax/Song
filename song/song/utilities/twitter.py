@@ -135,9 +135,11 @@ class Twitter(object):
                         if tweet["reply_id"]:
                             reply_url=f"https://{self.twitter_base_url}/{tweet['reply_user']}/status/{tweet['reply_id']}"
                             logging.info(f"reply_url: {reply_url}")
-                            msg = f"[{tweet['reply_user']} tweeted]({reply_url}), and [{username} replied!]({url})"
+                            # msg = f"[{tweet['reply_user']} tweeted]({reply_url}), and [{username} replied!]({url})"
+                            msg = f"**{tweet['reply_user']}** tweeted: {reply_url}, and **{username}** replied! {url}"
                         else:
-                            msg = f"[{username} tweeted!]({url})"
+                            # msg = f"[{username} tweeted!]({url})"
+                            msg = f"**{username}** tweeted! {url}"
                         if not await self.client.check_muted_user(username):
                             await channel.send(msg)
                         else:
