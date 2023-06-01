@@ -137,9 +137,9 @@ class Twitter(object):
                             logging.info(f"reply_url: {reply_url}")
                             # msg = f"[{tweet['reply_user']} tweeted]({reply_url}), and [{username} replied!]({url})"
                             if tweet['reply_user'] != username:
-                                msg = f"**{tweet['reply_user']}** tweeted: {reply_url}, and **{username}** replied! {url}"
+                                msg = f"**{tweet['reply_user']}** tweeted, and **{username}** replied! {reply_url} {url}"
                             else:
-                                msg = f"**{username}** replied to their own tweet at {reply_url} with {url}!"
+                                msg = f"**{username}** replied to their own tweet! {reply_url} {url}"
                         else:
                             # msg = f"[{username} tweeted!]({url})"
                             msg = f"**{username}** tweeted! {url}"
