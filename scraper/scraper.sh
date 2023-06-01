@@ -30,7 +30,7 @@ trap "exit" SIGINT
 while true; do
   for user in "${USERS[@]}"; do
     echo "Scraping $user"
-    IFS=' ' mapfile -t tweets < <(snscrape -n 10 --retry 3 --jsonl twitter-profile $user)
+    IFS=' ' mapfile -t tweets < <(snscrape -n 10 --retry 3 --jsonl twitter-search "from:$user include:nativeretweets")
     for tweet in "${tweets[@]}"; do
       username=$(echo $tweet | zq -f zson 'yield user.username' - | sed s/\"//g)
       status_id=$(echo $tweet | zq -f zson 'yield id' -)
@@ -38,6 +38,7 @@ while true; do
       [[ $reply_id == 'null' ]] && reply_id=0
       reply_user=$(echo $tweet | zq -f zson 'yield inReplyToUser.username' - | sed s/\"//g)
       [[ $reply_user == 'error("missing")' ]] && reply_user=''
+      [[ $reply_user == 'error(missing)' ]] && reply_user=''
       date=$(echo $tweet | zq -f zson 'yield date' -)
       psql "user=$SNSCRAPE_DATABASE_USERNAME password=$SNSCRAPE_DATABASE_PASSWORD host=$SNSCRAPE_DATABASE_HOST dbname=$SNSCRAPE_DATABASE_DB" -c "INSERT INTO tweets(username, status_id, date, reply_id, reply_user, silva_read) VALUES ('$username', $status_id, '$date', NULLIF('$reply_id', '0')::bigint, NULLIF('$reply_user', ''), false) ON CONFLICT (username, status_id) DO NOTHING" > /dev/null
     done

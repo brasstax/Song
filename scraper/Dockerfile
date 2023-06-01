@@ -8,7 +8,7 @@ RUN apt update && apt install postgresql-client-14 -y
 RUN wget https://github.com/brimdata/zed/releases/download/${ZED_VERSION}/zed-${ZED_VERSION}.linux-amd64.tar.gz && tar -zxvf zed-${ZED_VERSION}.linux-amd64.tar.gz -C /usr/local/bin
 COPY . /home/song
 WORKDIR /home/song
-RUN pip install snscrape --no-cache-dir
+RUN pip install git+https://github.com/JustAnotherArchivist/snscrape.git --no-cache-dir
 RUN chown song:song -R . && chmod 755 scraper.sh
 
 USER song
