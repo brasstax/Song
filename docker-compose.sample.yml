@@ -6,6 +6,7 @@ x-common-variables: &common-variables
   SNSCRAPE_DATABASE_HOST: postgres
   SNSCRAPE_DATABASE_USERNAME: postgres
   SNSCRAPE_DATABASE_PASSWORD: sample_password # Should match POSTGRES_PASSWORD below
+  SNSCRAPE_MAX_RESULTS: 10
   NITTER_ADDRESS: twiiit.com
 
 services:
