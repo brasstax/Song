@@ -22,41 +22,41 @@ services:
       DISCORD_COMMAND_PREFIX: "," # Or put in another command prefix if you'd like; this doesn't actually see any use.
       TWITTER_BASE_URL: "twitter.com" # You can swap this out with another twitter-parsing service, such as fxtwitter.com or vxtwitter.com
     depends_on:
-      snscrape-scraper:
+      nitter-rss-feed:
         condition: service_healthy
 
 
-  # nitter-rss-feed:
-  #   image: catfacts/nitter-rss-feed
-  #   build:
-  #     context: ./nitter-rss-feed
-  #   restart: always
-  #   environment: *common-variables
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "/home/song/healthcheck.sh"]
-  #     interval: 30s
-  #     timeout: 5s
-  #     retries: 2
-  #     start_period: 10s
+  nitter-rss-feed:
+     image: catfacts/nitter-rss-feed
+     build:
+       context: ./nitter-rss-feed
+     restart: always
+     environment: *common-variables
+     depends_on:
+       postgres:
+         condition: service_healthy
+     healthcheck:
+       test: ["CMD", "/home/song/healthcheck.sh"]
+       interval: 30s
+       timeout: 5s
+       retries: 2
+       start_period: 10s
 
-  snscrape-scraper:
-    image: catfacts/twitter-scraper
-    restart: always
-    build:
-      context: ./scraper
-    environment: *common-variables
-    depends_on:
-      postgres:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "/home/song/healthcheck.sh"]
-      interval: 10s
-      retries: 5
-      start_period: 20s
-      timeout: 20s
+  #snscrape-scraper:
+  #  image: catfacts/twitter-scraper
+  #  restart: always
+  #  build:
+  #    context: ./scraper
+  #  environment: *common-variables
+  #  depends_on:
+  #    postgres:
+  #      condition: service_healthy
+  #  healthcheck:
+  #    test: ["CMD", "/home/song/healthcheck.sh"]
+  #    interval: 10s
+  #    retries: 5
+  #    start_period: 20s
+  #    timeout: 20s
 
   postgres:
     image: postgres:14-alpine
