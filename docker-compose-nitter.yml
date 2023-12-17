@@ -5,20 +5,21 @@
 version: "3.9"
 services:
   nitter:
-    image: zedeus/nitter:latest
+    image: catfacts/nitter:latest
     hostname: nitter
     # You shouldn't need ports exposed once you have this working since you want to have this
     # in the same network as the scraper.
-    # ports:
-    #   - "127.0.0.1:8080:8080"
+    ports:
+      - "127.0.0.1:8080:8080"
     volumes:
       - ./nitter/nitter.example.conf:/src/nitter.conf:Z,ro
+      - ./nitter/guest_accounts.jsonl:/src/guest_accounts.jsonl:Z,ro
     depends_on:
       - nitter-redis
     restart: unless-stopped
     healthcheck:
       test: wget -nv --tries 1 --spider http://localhost:8080/Jack/status/20 || exit 1
-      interval: 30s
+      interval: 60s
       timeout: 5s
       retries: 2
     user: "998:998"
