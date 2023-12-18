@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
     healthcheck:
       test: wget -nv --tries 1 --spider http://localhost:8080/Jack/status/20 || exit 1
-      interval: 60s
+      interval: 300s
       timeout: 5s
       retries: 2
     user: "998:998"
