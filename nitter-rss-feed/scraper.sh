@@ -21,5 +21,5 @@ psql "user=$SNSCRAPE_DATABASE_USERNAME password=$SNSCRAPE_DATABASE_PASSWORD host
 psql "user=$SNSCRAPE_DATABASE_USERNAME password=$SNSCRAPE_DATABASE_PASSWORD host=$SNSCRAPE_DATABASE_HOST dbname=$SNSCRAPE_DATABASE_DB" -c "CREATE TABLE IF NOT EXISTS settings(id SERIAL PRIMARY KEY, name TEXT, value TEXT)" > /dev/null
 while true; do
   ./feed_parse.py
-  sleep 20
+  sleep 1800
 done
