@@ -4,6 +4,7 @@ which psql > /dev/null
 [[ $? -ne 0 ]] && echo "psql not installed." && exit 1;
 which zq > /dev/null
 [[ $? -ne 0 ]] && echo "zq not installed." && exit 1;
+SLEEP_SECONDS="${SLEEP_SECONDS:-1800}"
 [[ -z ${SNSCRAPE_TWITTER_USERS} ]]  && echo "SNSCRAPE_TWITTER_USERS not set. Set SNSCRAPE_TWITTER_USERS with user handles you want to scrape, separated by comma." && exit 1;
 [[ -z ${SNSCRAPE_DATABASE_DB} ]]  && echo "SNSCRAPE_DATABASE_DB not set. Set the name for a postgres database that scraper.sh will use." && exit 1;
 [[ -z ${SNSCRAPE_DATABASE_HOST} ]] && echo "SNSCRAPE_DATABASE_HOST not set. Set the host for a postgres host that scraper.sh will use." && exit 1;
@@ -21,5 +22,5 @@ psql "user=$SNSCRAPE_DATABASE_USERNAME password=$SNSCRAPE_DATABASE_PASSWORD host
 psql "user=$SNSCRAPE_DATABASE_USERNAME password=$SNSCRAPE_DATABASE_PASSWORD host=$SNSCRAPE_DATABASE_HOST dbname=$SNSCRAPE_DATABASE_DB" -c "CREATE TABLE IF NOT EXISTS settings(id SERIAL PRIMARY KEY, name TEXT, value TEXT)" > /dev/null
 while true; do
   ./feed_parse.py
-  sleep 1800
+  sleep $SLEEP_SECONDS
 done
