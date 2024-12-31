@@ -59,7 +59,7 @@ services:
   #    timeout: 20s
 
   postgres:
-    image: postgres:14-alpine
+    image: postgres:17-alpine
     restart: always
     user: postgres
     environment:
