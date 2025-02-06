@@ -1,4 +1,4 @@
-FROM python:3.11-bullseye
+FROM python:3.13-bullseye
 
 RUN useradd song -u 1000 && mkdir /home/song && chown song:song /home/song
 COPY . /home/song
