@@ -153,10 +153,12 @@ class Twitter(object):
                         # msg = f"[{username} tweeted!]({url})"
                         msg = f"**{username}** tweeted! {url}"
                         payload = {"content": msg}
-                        await self.client.post(
+                        res = await self.client.post(
                             self.discord_webhook,
                             json=payload,
                             timeout=20,
                         )
-                        await self.db_client.mark_tweet_read(username, sid)
+                        if res.is_success:
+                            await self.db_client.mark_tweet_read(username, sid)
+                        await asyncio.sleep(2)
             await asyncio.sleep(5)

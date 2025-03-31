@@ -38,6 +38,8 @@ DISCORD_WEBHOOK = os.environ.get("DISCORD_WEBHOOK", None)
 if not DISCORD_WEBHOOK:
     sys.exit("DISCORD_WEBHOOK environment variable not set.")
 
+TWITTER_BASE_URL = os.environ.get("TWITTER_BASE_URL", "fxtwitter.com")
+
 tweeter = twitter.Twitter(
     client,
     twitter_database_db=SNSCRAPE_DATABASE_DB,
@@ -46,6 +48,7 @@ tweeter = twitter.Twitter(
     twitter_database_password=SNSCRAPE_DATABASE_PASSWORD,
     twitter_usernames=TO_FOLLOW,
     discord_webhook=DISCORD_WEBHOOK,
+    twitter_base_url=TWITTER_BASE_URL,
 )
 
 
