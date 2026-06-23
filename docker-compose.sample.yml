@@ -11,7 +11,7 @@ x-common-variables: &common-variables
 
 services:
   discord-bot:
-    image: catfacts/song
+    image: catfacts/song-webhook
     restart: always
     build:
       context: ./song
